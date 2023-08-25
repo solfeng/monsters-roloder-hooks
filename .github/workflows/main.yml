@@ -2,9 +2,9 @@ name: Build and deploy to github mainnet
 # on 表示触发actions的条件
 on:
   push:
-    branches: [mantle_latest] # 分支在push的时候会触发
+    branches: [main] # 分支在push的时候会触发
   pull_request:
-    branches: [mantle_latest] # 分支在PR的时候会触发
+    branches: [main] # 分支在PR的时候会触发
 
 jobs:
   build:
@@ -24,8 +24,8 @@ jobs:
           cache: "npm"
       - name: build project
         run: |
-          npm install
-          npm run build:testnet:mantle
+          npm install -f
+          npm run build
       - name: FTP deploy 自动同步文件夹到我的服务器
         uses: SamKirkland/FTP-Deploy-Action@2.0.0 # 如果失效，可以使用其他类似库
         env:
