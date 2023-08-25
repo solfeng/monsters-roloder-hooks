@@ -1,0 +1,38 @@
+name: Build and deploy to github mainnet
+# on 表示触发actions的条件
+on:
+  push:
+    branches: [mantle_latest] # 分支在push的时候会触发
+  pull_request:
+    branches: [mantle_latest] # 分支在PR的时候会触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest #nodejs执行的操作系统
+
+    strategy:
+      matrix:
+        node-version: [16.15.1] #选择你需要的nodejs版本
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@main #拉取你的最新代码
+      - name: 使用 Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: build project
+        run: |
+          npm install
+          npm run build:testnet:mantle
+      - name: FTP deploy 自动同步文件夹到我的服务器
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0 # 如果失效，可以使用其他类似库
+        env:
+          FTP_SERVER: ${{ secrets.SERVER_IP }}
+          FTP_USERNAME: ${{ secrets.USERNAME }}
+          FTP_PASSWORD: ${{ secrets.PASSWORD }}
+          PORT: ${{ secrets.SERVER_PORT }}
+          LOCAL_DIR: ./build/
+          REMOTE_DIR: /var/www/mantle/app_mantle_test/
+          METHOD: sftp
