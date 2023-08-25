@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.15.1] #选择你需要的nodejs版本
+        node-version: [19.x] #选择你需要的nodejs版本
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -34,5 +34,5 @@ jobs:
           FTP_PASSWORD: ${{ secrets.PASSWORD }}
           PORT: ${{ secrets.SERVER_PORT }}
           LOCAL_DIR: ./build/
-          REMOTE_DIR: /var/www/mantle/app_mantle_test/
+          REMOTE_DIR: /var/www/monsters/test/
           METHOD: sftp
